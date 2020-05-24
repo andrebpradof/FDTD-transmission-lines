@@ -75,8 +75,8 @@ V_inf = (Rl*fonte(res_fonte,N*dt,l))/(Rl+Rs)
 I_inf = fonte(res_fonte,N*dt,l)/(Rl+Rs)
 
 print("\nResultados:")
-print("V∞(z,t) = "+str(V_inf))
-print("I∞(z,t) = "+str(I_inf))
+#print("V∞(z,t) = "+V_inf)
+#print("I∞(z,t) = "+I_inf)
 
 
 #Condições iniciais de tensão e corrente
@@ -113,21 +113,14 @@ V = V*(dt/(C*dz))
 figure, (voltage) = pyplot.subplots(1,1)
 voltage.grid(True)
 
-voltage.patch.set_facecolor('#E0E0E0')
-voltage.patch.set_alpha(0.7)
-
 voltage_plot, = voltage.plot(np.linspace(0,l,K), V[0], color='b', label='Voltage [V]')
 voltage.set_ylim(-1, 3)
 voltage.legend()
-voltage.set_ylabel('V(z,t)')
-voltage.set_xlabel('z (m)')
-voltage.set_title('Voltagem')
 
 #Writer = animation.writers['ffmpeg']
 #writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
 
 animation1 = animation.FuncAnimation(figure, func = animate, frames=np.arange(0, N, (int)(K/10)), interval = 100, repeat = False)
-
 
 #animation.save('animated_coil.mp4', writer = 'ffmpeg', fps = 30)
 
@@ -137,9 +130,6 @@ current.grid(True)
 current_plot, = current.plot(np.linspace(0,l,K), I[0], color='g', label='Corrente [A]')
 current.set_ylim(-0.05, 0.05)
 current.legend()
-current.set_ylabel('I(z,t)')
-current.set_xlabel('z (m)')
-current.set_title('Corrente')
 
 #Writer = animation.writers['ffmpeg']
 #writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
