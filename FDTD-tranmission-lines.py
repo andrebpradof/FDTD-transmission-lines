@@ -27,10 +27,13 @@ def Vs1(t):
 def Vs2(t,l):
     return u(t) - u(t - l/(10*uf))
 
-def animate(n):
+def animacao_voltagem(n):
     voltage_plot.set_ydata(V[n])
+    return voltage_plot
+
+def animacao_corrente(n):
     current_plot.set_ydata(I[n])
-    return voltage_plot,
+    return current_plot
 
 res_fonte = input("Fonte: ")
 res_carga = input("Carga: ")
@@ -50,7 +53,7 @@ else:
 uf = 0.9*sci.speed_of_light
 tempo_t = 10*l/uf #3.70E-5
 dz = l/K #Respeita a condição de estabilidade
-dt = dz/uf*0.25
+dt = dz/uf*0.1
 N = int(tempo_t/dt)
 #Impedância característica
 Zo = 50
@@ -113,8 +116,8 @@ V = V*(dt/(C*dz))
 figure, (voltage) = pyplot.subplots(1,1)
 voltage.grid(True)
 
-voltage.patch.set_facecolor('#E0E0E0')
-voltage.patch.set_alpha(0.7)
+figure.patch.set_facecolor('#E0E0E0')
+figure.patch.set_alpha(0.7)
 
 voltage_plot, = voltage.plot(np.linspace(0,l,K), V[0], color='b', label='Voltage [V]')
 voltage.set_ylim(-1, 3)
@@ -123,16 +126,19 @@ voltage.set_ylabel('V(z,t)')
 voltage.set_xlabel('z (m)')
 voltage.set_title('Voltagem')
 
-#Writer = animation.writers['ffmpeg']
-#writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
+Writer = animation.writers['ffmpeg']
+writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
 
-animation1 = animation.FuncAnimation(figure, func = animate, frames=np.arange(0, N, (int)(K/10)), interval = 100, repeat = False)
+animation1 = animation.FuncAnimation(figure, func = animacao_voltagem, frames=np.arange(0, N, (int)(K/10)), interval = 100, repeat = False)
 
 
-#animation.save('animated_coil.mp4', writer = 'ffmpeg', fps = 30)
+animation1.save('voltagem.mp4', writer = 'ffmpeg', fps = 30)
 
 figure2, (current) = pyplot.subplots(1,1)
 current.grid(True)
+
+figure2.patch.set_facecolor('#E0E0E0')
+figure2.patch.set_alpha(0.7)
 
 current_plot, = current.plot(np.linspace(0,l,K), I[0], color='g', label='Corrente [A]')
 current.set_ylim(-0.05, 0.05)
@@ -141,8 +147,8 @@ current.set_ylabel('I(z,t)')
 current.set_xlabel('z (m)')
 current.set_title('Corrente')
 
-#Writer = animation.writers['ffmpeg']
-#writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
+animation2 = animation.FuncAnimation(figure2, func = animacao_corrente, frames=np.arange(0, N, (int)(K/10)), interval = 100, repeat = False)
 
-animation2 = animation.FuncAnimation(figure2, func = animate, frames=np.arange(0, N, (int)(K/10)), interval = 100, repeat = False)
-pyplot.show()
+animation2.save('corente.mp4', writer = 'ffmpeg', fps = 30)
+
+#pyplot.show()
