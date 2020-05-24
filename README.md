@@ -7,16 +7,9 @@ Mateus Fernandes Doimo - Nº USP: 10691971</br>
 
 <hr>
 <h3>Descrição:</h3>
-<p>O objetivo deste Projeto é desenvolver um código ou algoritmo para visualização de tensão v(z, t)
-e corrente i(z, t) (transiente) em uma linha de transmissão sem perdas, baseado nas equações do
-telegrafista.</p>
+<p>O objetivo deste Projeto é desenvolver um código ou algoritmo para visualização de tensão v(z, t) e corrente i(z, t) (transiente) em uma linha de transmissão sem perdas, baseado nas equações do telegrafista.</p>
 
-<p>O método das diferenças finitas no domínio do tempo (Finite-Difference Time-Domain,
-FDTD) consiste em transformar as derivadas em (1) em diferenças finitas, criando uma grade
-ou malha para cálculo de v(z, t) e i(z, t) em pontos discretos do espaço (z) e do tempo (t), conforme
-ilustra a Fig. 1. Durante o processo, questões de estabilidade e dispersão numéricas devem
-ser consideradas, evitando erros numéricos indesejados. Todos os detalhes computacionais estão
-contidos na Ref.</p>
+<p>O método das diferenças finitas no domínio do tempo (Finite-Difference Time-Domain, FDTD) consiste em transformar as derivadas em (1) em diferenças finitas, criando uma grade ou malha para cálculo de v(z, t) e  (z, t) em pontos discretos do espaço (z) e do tempo (t). Durante o processo, questões de estabilidade e dispersão numéricas devem ser consideradas, evitando erros numéricos indesejados.</p>
 
 <hr>
 
