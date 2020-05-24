@@ -1,3 +1,13 @@
+# //////////////////////////////////////////////////////////////////
+# //  SEL0612 - Ondas eletromagneticas  (2020)                    //
+# //  Trabalho 01 - Linhas de trasmissao                          //
+# //                                                              //
+# //  Alunos:                                                     //
+# //  André Baconcelo Prado Furlanetti - Nº USP: 10748305         //
+# //  Diego da Silva Parra             - Nº USP: 10716550         //
+# //  Mateus Fernandes Doimo           - Nº USP: 10691971         //
+# //////////////////////////////////////////////////////////////////
+
 import numpy as np
 import math
 import matplotlib.pyplot as pyplot
@@ -40,18 +50,18 @@ def animacao_corrente(n):
 
 # Pega as informações do usuário 
 # Fonte = 1 --> *u(t)   2 --> u(t) - u(t - l/(10*uf))
-res_fonte = input("Fonte: ")
+res_fonte = input("Fonte: 1 ou 2 ? ")
 # Carga
-res_carga = input("Carga: ")
+res_carga = input("Carga: 0, 100 ou inf? ")
 
 l = int(input("Tamanho da linha (l): "))
 K = int(input("Numero de interacoes: "))
 
 #Carga
-if int(res_carga) == 0:
+if str(res_carga) == "0":
     Rl = 0
     nome_anim_RL = "0"
-elif int(res_carga) == 100:
+elif str(res_carga) == "100":
     Rl = 100
     nome_anim_RL = "100"
 else:
@@ -77,8 +87,8 @@ C = 1/(Zo*uf)   #Capacitância
 L = Zo/uf       #Indutância
 
 #Matrizes de tensão e corrente
-V = np.zeros((N, K))     #Tensão
-I = np.zeros((N, K))     #Corrente
+V = np.zeros((N, K))        #Tensão
+I = np.zeros((N, K-1))      #Corrente
 
 #Tamanho do eixo x dos gráficos
 eixo_x = np.array(range(K))*dz
@@ -93,30 +103,35 @@ print("I∞(z,t) = "+str(I_inf))
 
 
 #Condições iniciais de tensão e corrente
-V[0][0] = Zo*2/(Rs+Zo)
-I[0][0] = V[0][0]/Zo
+V[0][0] = (Zo*fonte(res_fonte, 0,K*dz))/(Rs+Zo)
+I[0][0] = fonte(res_fonte,0, K*dz)/(Rs+Zo)
 
-beta_S = 2*dt/(Rs*C*dz)
+
+beta_1 = 2*dt/(Rs*C*dz)
 
 if Rl == 0:
-    beta_L = math.inf
+    beta_2 = math.inf
 elif Rl == math.inf:
-    beta_L = 0
+    beta_2 = 0
 else:
-    beta_L = 2*dt/(Rl*C*dz)
+    beta_2 = 2*dt/(Rl*C*dz)
 
-# Método FDTD
+# Metodo FDTD
 for n in range(1,N):
-    V[n][0] = (1 - beta_S)*V[n-1][0] -2*I[n-1][0] + (2/Rs)*fonte(res_fonte,n*dt,l)
+    # Condicao de controrno da tensao no inicio da linha
+    V[n][0] = (1 - beta_1)*V[n-1][0] -2*I[n-1][0] + (2/Rs)*fonte(res_fonte,(n-1)*dt,l)
     
+    # Tensao para toda linha K
     for k in range (1,K-1):
         V[n][k] = V[n-1][k] - (I[n-1][k]-I[n-1][k-1])
 
+    # Condicao de contorno da tensao no final da linha
     if Rl == 0:
         V[n][K-1] = 0
     else:
-        V[n][K-1] = (1 - beta_L)*V[n-1][K-1] + 2*I[n-1][K-2]
+        V[n][K-1] = (1 - beta_2)*V[n-1][K-1] + 2*I[n-1][K-2]
 
+    # Corrente para toda linha K-1
     for k in range (0, K-1):
         I[n][k] = I[n-1][k] - (dt**2)/(L*C*dz**2)*(V[n][k+1] - V[n][k])
 
@@ -126,17 +141,20 @@ V = V*(dt/(C*dz))
 
 # Ajustes no tamanho do eixo y
 if Rl == math.inf:
-    volt_limite_y = 3
-    corrente_limite_y = 0.03
-elif Rl == 0:
-    volt_limite_y = 2
-    if res_fonte == 1:
-        corrente_limite_y = 0.065
+    if int(res_fonte) == 1:
+        volt_limite_y = 3
     else:
-        corrente_limite_y = 0.05
+        volt_limite_y = 2
+    corrente_limite_y = 0.04
+elif Rl == 0:
+    volt_limite_y = 2.2
+    if int(res_fonte) == 1:
+        corrente_limite_y = 0.06
+    else:
+        corrente_limite_y = 0.03
 else:
-    volt_limite_y = 2
-    corrente_limite_y = 0.03
+    volt_limite_y = 2.2
+    corrente_limite_y = 0.04
 
 # Configurando gráfico da tensão
 figure, voltage = pyplot.subplots(1,1)
@@ -149,6 +167,7 @@ voltage.legend()
 voltage.set_ylabel('V(z,t)')
 voltage.set_xlabel('z (m)')
 voltage.set_title('Voltagem')
+
 
 #Writer = animation.writers['ffmpeg']
 #writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
@@ -163,7 +182,7 @@ figure2, current = pyplot.subplots(1,1)
 current.grid(True)
 figure2.patch.set_facecolor('#E0E0E0')
 figure2.patch.set_alpha(0.7)
-current_plot, = current.plot(np.linspace(0,l,K), I[0], color='g', label='Corrente [A]')
+current_plot, = current.plot(np.linspace(0,l,K-1), I[0], color='g', label='Corrente [A]')
 current.set_ylim(-0.025, corrente_limite_y)
 current.legend()
 current.set_ylabel('I(z,t)')
@@ -173,7 +192,7 @@ current.set_title('Corrente')
 animation2 = animation.FuncAnimation(figure2, func = animacao_corrente, frames=np.arange(0, N, (int)(K/10)), interval = 100, repeat = False)
 
 # Para salvar a animação em .mp4
-#.save("Fonte_"+res_fonte+"_corrente_RL_"+nome_anim_RL+".mp4", writer = 'ffmpeg')
+#animation2.save("Fonte_"+res_fonte+"_corrente_RL_"+nome_anim_RL+".mp4", writer = 'ffmpeg')
 
 #Mostra as animações
 pyplot.show()
