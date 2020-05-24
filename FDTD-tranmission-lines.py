@@ -53,7 +53,7 @@ else:
 uf = 0.9*sci.speed_of_light
 tempo_t = 10*l/uf #3.70E-5
 dz = l/K #Respeita a condição de estabilidade
-dt = dz/uf*0.1
+dt = dz/uf*0.3
 N = int(tempo_t/dt)
 #Impedância característica
 Zo = 50
@@ -87,7 +87,6 @@ V[0][0] = Zo*2/(Rs+Zo)
 I[0][0] = V[0][0]/Zo
 
 beta_S = 2*dt/(Rs*C*dz)
-r = dt*dt/(L*C*dz*dz)
 
 if Rl == 0:
     beta_L = math.inf
@@ -132,7 +131,7 @@ writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
 animation1 = animation.FuncAnimation(figure, func = animacao_voltagem, frames=np.arange(0, N, (int)(K/10)), interval = 100, repeat = False)
 
 
-animation1.save('voltagem.mp4', writer = 'ffmpeg', fps = 30)
+#animation1.save('voltagem.mp4', writer = 'ffmpeg', fps = 30)
 
 figure2, (current) = pyplot.subplots(1,1)
 current.grid(True)
@@ -149,6 +148,6 @@ current.set_title('Corrente')
 
 animation2 = animation.FuncAnimation(figure2, func = animacao_corrente, frames=np.arange(0, N, (int)(K/10)), interval = 100, repeat = False)
 
-animation2.save('corente.mp4', writer = 'ffmpeg', fps = 30)
+#animation2.save('corente.mp4', writer = 'ffmpeg', fps = 30)
 
-#pyplot.show()
+pyplot.show()
